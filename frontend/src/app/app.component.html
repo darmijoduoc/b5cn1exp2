@@ -1,0 +1,67 @@
+<!-- =============================================================
+     📘 Semana 3 - Estructura principal del Frontend Angular
+     ============================================================= -->
+
+<div class="app-container">
+  <!-- Encabezado -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+      <div class="container">
+        <!-- Logo y Título -->
+        <a class="navbar-brand d-flex align-items-center" routerLink="/">
+          <span class="fs-2 me-2">🚌</span>
+          <div class="d-flex flex-column">
+            <span class="fw-bold lh-1">TranspApp</span>
+            <span class="small fw-light opacity-75" style="font-size: 0.75rem;">Gestión de Transporte</span>
+          </div>
+        </a>
+
+        <!-- Botón para móvil -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Enlaces de navegación -->
+        <div class="collapse navbar-collapse" id="navbarNav" *ngIf="loggedIn">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" routerLink="/monitoring" routerLinkActive="active">Monitorización</a>
+            </li>
+            <li class="nav-item" *ngIf="isAdmin()">
+              <a class="nav-link px-3" routerLink="/management" routerLinkActive="active">Gestión</a>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light ms-lg-3" (click)="logout()">Cerrar Sesión</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarNav" *ngIf="!loggedIn">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <button class="btn btn-light px-4" (click)="loginPopup()">Iniciar Sesión</button>
+            </li>
+          </ul>
+        </div>
+
+        
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenido dinámico -->
+  <main class="app-content container py-5" style="min-height: 70vh;">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Pie de página -->
+  <footer class="bg-dark text-white py-4 mt-auto">
+    <div class="container text-center">
+      <p class="mb-1 fw-bold">Exp2_S5 Clinical &copy; 2024</p>
+      <p class="small text-white-50 mb-0">Desarrollado con <span class="text-danger">❤</span> en Angular + Spring Boot</p>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,60 @@
+<div class="container-fluid">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="display-5 fw-bold text-primary">Monitorización de Flota</h2>
+            <p class="lead">Ubicaciones estimadas y estado del servicio en tiempo real.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <button class="btn btn-outline-primary shadow-sm" (click)="refreshLocations()">
+                🔄 Actualizar Ubicaciones
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!loading" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+        <div class="col" *ngFor="let v of vehicles">
+            <div class="card h-100 shadow-sm border-0 border-top border-4" 
+                 [ngClass]="v.status === 'Active' ? 'border-success' : 'border-warning'">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-0 fw-bold">{{v.plate}}</h5>
+                            <small class="text-muted text-uppercase">{{v.type}}</small>
+                        </div>
+                        <span class="badge" [ngClass]="v.status === 'Active' ? 'bg-success' : 'bg-warning'">
+                            {{v.status === 'Active' ? 'Activo' : 'Mantenimiento'}}
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="small text-uppercase fw-bold text-muted mb-1 d-block">Ruta Asignada</label>
+                        <div class="p-2 bg-light rounded">
+                            <span class="fw-bold text-dark">[{{ v.route ? v.route.code : '---' }}] {{ v.route ? v.route.title : 'Sin Ruta' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="small text-uppercase fw-bold text-muted mb-1 d-block">Punto de Control Actual</label>
+                        <p class="card-text">
+                            <span class="text-primary fs-5 me-1">🏢</span>
+                            <span class="text-dark fw-bold">{{v.currentAddress}}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 text-end pb-3">
+                    <small class="text-muted" style="font-size: 0.7rem;">ULID: {{v.ulid}}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && vehicles.length === 0" class="alert alert-info shadow-sm">
+        No vehicles registered for monitoring.
+    </div>
+</div>

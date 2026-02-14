@@ -1,0 +1,23 @@
+# Ignorar archivos de construcción
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Ignorar archivos de IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs
+*.log
+
+# Ignorar archivos de configuración local
+.env
+*.local
+

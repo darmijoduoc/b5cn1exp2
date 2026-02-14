@@ -1,0 +1,13 @@
+<!-- Si el usuario está logueado -->
+<div *ngIf="loggedIn">
+  <h2>¡Bienvenido!</h2>
+  <p>Hola {{ session?.displayName }}</p>
+  <button class="btn btn-danger" (click)="logout()">Cerrar Sesión</button>
+</div>
+
+<!-- Si el usuario NO está logueado -->
+<div *ngIf="!loggedIn">
+  <h2>Bienvenido al Sistema</h2>
+  <p>Por favor inicia sesión para continuar</p>
+  <a class="btn btn-primary" routerLink="/login">Iniciar Sesión</a>
+</div>

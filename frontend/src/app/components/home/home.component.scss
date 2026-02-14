@@ -1,0 +1,123 @@
+// Estilos para la galería de imágenes cuando el usuario está logueado
+.image-gallery {
+  margin: 2rem 0;
+  
+  h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+}
+
+// Estilos para la vista previa cuando el usuario NO está logueado
+.preview-gallery {
+  margin: 2rem 0;
+  opacity: 0.8;
+  
+  h3 {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+  }
+}
+
+// Container para las imágenes
+.images-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.image-item {
+  text-align: center;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Estilos para imágenes cuando el usuario está logueado
+.gallery-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Estilos para imágenes de vista previa (usuarios no logueados)
+.preview-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  filter: grayscale(30%);
+  opacity: 0.9;
+}
+
+// Estilos para botones
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  margin: 1rem 0;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &.btn-primary {
+    background-color: #007bff;
+    color: white;
+    
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+  
+  &.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    
+    &:hover {
+      background-color: #c82333;
+    }
+  }
+}
+
+// Estilos generales del componente
+h2 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .images-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .gallery-image,
+  .preview-image {
+    height: 200px;
+  }
+}

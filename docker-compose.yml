@@ -1,0 +1,118 @@
+services:
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Producer GPS - Receives GPS locations via REST and publishes to RabbitMQ
+  producer-gps:
+    build:
+      context: ./producer-gps
+      dockerfile: Dockerfile
+    container_name: producer-gps
+    ports:
+      - "8082:8082"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin123
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Producer Schedule - Receives schedule updates via REST and publishes to RabbitMQ
+  producer-schedule:
+    build:
+      context: ./producer-schedule
+      dockerfile: Dockerfile
+    container_name: producer-schedule
+    ports:
+      - "8083:8083"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin123
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Consumer Location - Consumes GPS messages and stores in Oracle Database
+  consumer-location:
+    build:
+      context: ./consumer-location
+      dockerfile: Dockerfile
+    container_name: consumer-location
+    ports:
+      - "8084:8084"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin123
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@gibi3xseta997y7i_tp
+      SPRING_DATASOURCE_USERNAME: ADMIN
+      SPRING_DATASOURCE_PASSWORD: aWxpYqvej@bUin3P!tbP
+      TNS_ADMIN: /app/.credentials/Wallet_GIBI3XSETA997Y7I
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Consumer Schedule - Consumes schedule messages and generates JSON files
+  consumer-schedule:
+    build:
+      context: ./consumer-schedule
+      dockerfile: Dockerfile
+    container_name: consumer-schedule
+    ports:
+      - "8085:8085"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin123
+      FILE_STORAGE_PATH: /app/data/schedules
+    volumes:
+      - schedules-data:/app/data/schedules
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  rabbitmq-data:
+    driver: local
+  schedules-data:
+    driver: local

@@ -1,0 +1,181 @@
+<div class="container-fluid pb-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="display-5 fw-bold text-primary">Panel de Administración</h2>
+            <p class="lead">Configuración de rutas, paradas y gestión de flota.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- ROUTES SECTION -->
+        <div class="col-xl-7 mb-4">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">🗺️ Definición de Rutas</h5>
+                    <span class="badge bg-primary">{{routes.length}} Rutas</span>
+                </div>
+                <div class="card-body">
+                    <!-- New Route Form -->
+                    <div class="p-3 bg-light rounded mb-4 border">
+                        <h6 class="fw-bold mb-3 border-bottom pb-2 text-secondary text-uppercase" style="font-size: 0.75rem;">Crear Nueva Ruta</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" [(ngModel)]="newRoute.code" name="routeCode" placeholder="Código (ej. 201)">
+                            </div>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" [(ngModel)]="newRoute.title" name="routeTitle" placeholder="Título (ej. Poniente -> Centro)">
+                            </div>
+                            
+                            <!-- Dynamic Point Manager -->
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Puntos de Parada / Itinerario:</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" [(ngModel)]="newPointName" (keyup.enter)="addPoint()" placeholder="Escribe una parada y presiona Enter">
+                                    <button class="btn btn-outline-secondary" type="button" (click)="addPoint()">+ Añadir</button>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <span *ngFor="let p of newRoute.points; let i = index" class="badge bg-white text-dark border p-2 d-flex align-items-center">
+                                        {{p.name}}
+                                        <button type="button" class="btn-close ms-2" style="font-size: 0.5rem;" (click)='removePoint(i)'></button>
+                                    </span>
+                                    <small *ngIf="newRoute.points.length === 0" class="text-muted italic">No se han añadido paradas aún.</small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-end mt-3">
+                                <button class="btn btn-primary px-4 fw-bold" (click)="createRoute()" [disabled]="!newRoute.code || !newRoute.title || newRoute.points.length < 2">
+                                    💾 Guardar Ruta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Routes Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Título</th>
+                                    <th>Itinerario</th>
+                                    <th class="text-end">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let r of routes; let idx = index">
+                                    <td class="fw-bold text-dark" style="width: 10%;">{{r.code}}</td>
+                                    <td style="width: 25%;">
+                                        <div class="fw-bold text-primary">{{r.title}}</div>
+                                        <div *ngIf="r.previousRoute" class="mt-1">
+                                            <span class="badge bg-info text-dark" style="font-size: 0.6rem;">
+                                                🔗 Conecta con: {{r.previousRoute.code}}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-1 align-items-center mb-1">
+                                            <span class="badge rounded-pill bg-light text-dark border" style="font-size: 0.65rem;" *ngFor="let pt of r.points | slice:0:3">
+                                                {{pt.name}}
+                                            </span>
+                                            
+                                            <button *ngIf="r.points && r.points.length > 3" 
+                                                    class="btn btn-xs btn-outline-info py-0 px-1 fw-bold" 
+                                                    style="font-size: 0.65rem;"
+                                                    type="button" 
+                                                    data-bs-toggle="collapse" 
+                                                    [attr.data-bs-target]="'#collapseRoute' + idx">
+                                                Ver {{r.points.length}} paradas
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Collapse Panel -->
+                                        <div class="collapse" [id]="'collapseRoute' + idx">
+                                            <div class="bg-light p-2 rounded border mt-2" style="max-height: 150px; overflow-y: auto;">
+                                                <div *ngFor="let pt of r.points; let i = index" class="small d-flex mb-1">
+                                                    <span class="text-muted me-2">{{pt.position + 1}}.</span>
+                                                    <span>{{pt.name}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <button class="btn btn-link text-danger p-0" (click)="deleteRoute(r.ulid)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLEET SECTION -->
+        <div class="col-xl-5">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0">🚌 Gestión de Flota</h5>
+                </div>
+                <div class="card-body">
+                    <form (ngSubmit)="createVehicle()" class="bg-light p-3 rounded mb-4 border">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="small fw-bold mb-1">Patente</label>
+                                <input type="text" class="form-control" [(ngModel)]="newVehicle.plate" name="plate" placeholder="ABCD-12">
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-bold mb-1">Tipo</label>
+                                <select class="form-select" [(ngModel)]="newVehicle.type" name="type">
+                                    <option value="Bus">Bus</option>
+                                    <option value="Subway">Metro</option>
+                                    <option value="Train">Tren</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="small fw-bold mb-1">Asignar a Ruta</label>
+                                <select class="form-select" [(ngModel)]="newVehicle.routeUlid" name="routeUlid">
+                                    <option value="">-- Seleccionar Ruta --</option>
+                                    <option *ngFor="let r of routes" [value]="r.ulid">[{{r.code}}] {{r.title}}</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success w-100 fw-bold" [disabled]="!newVehicle.plate || !newVehicle.routeUlid">
+                                    Registrar Vehículo
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>VEHÍCULO</th>
+                                    <th>ESTADO</th>
+                                    <th>RUTA</th>
+                                    <th class="text-end">X</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let v of vehicles">
+                                    <td>
+                                        <div class="fw-bold">{{v.plate}}</div>
+                                        <small class="text-muted">{{v.type === 'Subway' ? 'Metro' : v.type}}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge" [ngClass]="v.status === 'Active' ? 'bg-success' : 'bg-warning'" style="font-size: 0.6rem;">
+                                            {{v.status === 'Active' ? 'Activo' : 'Mantenimiento'}}
+                                        </span>
+                                    </td>
+                                    <td><small>{{v.route?.code}}</small></td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm text-danger" (click)="deleteVehicle(v.ulid)">×</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

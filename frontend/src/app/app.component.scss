@@ -1,0 +1,57 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+.app-header {
+  background-color: #1976d2;
+  color: #fff;
+  padding: 1.2rem 2rem;
+  text-align: center;
+  border-bottom: 4px solid #1565c0;
+
+  h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .nav-links {
+    margin-top: 0.6rem;
+
+    a {
+      color: #e3f2fd;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: 500;
+      transition: color 0.2s ease-in-out, transform 0.1s;
+
+      &:hover {
+        color: #fff;
+        transform: scale(1.05);
+      }
+
+      &.active-link {
+        border-bottom: 2px solid #fff;
+        padding-bottom: 2px;
+      }
+    }
+  }
+}
+
+.app-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.app-footer {
+  background-color: #e3f2fd;
+  text-align: center;
+  padding: 1rem;
+  color: #1565c0;
+  font-weight: 500;
+  border-top: 2px solid #bbdefb;
+}

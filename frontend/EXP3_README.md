@@ -1,0 +1,1 @@
+ng test --watch=false --code-coverage && sonar-scanner
