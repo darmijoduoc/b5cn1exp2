@@ -1,0 +1,21 @@
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific ignores (covered in subdirectories but here for safety)
+**/node_modules/
+**/target/
+**/.angular/
+**/dist/
+
+# Logs
+*.log
+.docs/**
+.github/**
+CLAUDE.md
+GEMINI.md
+.claude/**
+.gemini/**
+AGENTS.md
