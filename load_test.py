@@ -13,8 +13,8 @@ from typing import Dict, List
 import requests
 
 # Configuración
-PRODUCER_GPS_URL = "http://54.221.95.112:8082/api/producer/gps/location"
-PRODUCER_SCHEDULE_URL = "http://54.221.95.112:8083/api/producer/schedule/update"
+PRODUCER_GPS_URL = "http://localhost:8082/api/producer/gps/location"
+PRODUCER_SCHEDULE_URL = "http://localhost:8083/api/producer/schedule/update"
 
 GPS_CALLS = 100
 SCHEDULE_CALLS = 20

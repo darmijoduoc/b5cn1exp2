@@ -27,12 +27,21 @@ public class LocationStorageService {
             location.setRoute(locationDTO.getRoute());
 
             repository.save(location);
-            log.info("Ubicación guardada en base de datos para vehículo: {} en {}",
-                    locationDTO.getVehicleId(), locationDTO.getTimestamp());
+            log.info(
+                "Ubicación guardada en base de datos para vehículo: {} en {}",
+                locationDTO.getVehicleId(),
+                locationDTO.getTimestamp()
+            );
         } catch (Exception e) {
-            log.error("Error al guardar ubicación para vehículo: {}",
-                    locationDTO.getVehicleId(), e);
-            throw new RuntimeException("Error al guardar ubicación en base de datos", e);
+            log.error(
+                "Error al guardar ubicación para vehículo: {}",
+                locationDTO.getVehicleId(),
+                e
+            );
+            throw new RuntimeException(
+                "Error al guardar ubicación en base de datos",
+                e
+            );
         }
     }
 }
